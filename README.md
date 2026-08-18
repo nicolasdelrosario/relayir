@@ -68,21 +68,33 @@ No decoder. No binary alphabet. No hidden state.
 Valid role headers are `H1 EXP`, `H1 REV`, `H1 IMP`, and `H1 ARC`. See the full
 [H1 v1 reference](docs/h1.md).
 
-## Try it in under a minute
+## Install in under a minute
 
 Requirements:
 
 - Node.js 24 or newer.
-- OpenCode only for real-model benchmarks. RelayIR was tested with OpenCode 1.18.18.
+- OpenCode 1.18.18 or newer in the 1.x series.
+
+Create or update `opencode.json` with the one-line plugin configuration:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": ["relayir"]
+}
+```
+
+OpenCode automatically installs the npm plugin. RelayIR adds the generic H1
+handoff contract to child/subagent sessions only; root sessions are unchanged.
+Remove `"relayir"` to disable it. `opencode --pure` disables plugins. RelayIR
+does not change models, tools, permissions, or send telemetry.
+
+To run the local checks instead:
 
 ```bash
-git clone https://github.com/nicolasdelrosario/relayir.git
-cd relayir
 npm test
 npm run benchmark:fake
 ```
-
-There are no runtime dependencies and no install step.
 
 To benchmark a real model:
 
@@ -99,8 +111,8 @@ Copy [`contracts/h1-v1.md`](contracts/h1-v1.md) into a subagent's system prompt 
 ask it to return the role that matches its job. The parser and validator are in
 [`src/protocol.ts`](src/protocol.ts).
 
-RelayIR does **not** yet intercept normal OpenCode delegation automatically. An
-opt-in plugin is on the roadmap; the protocol works without it.
+The npm plugin integrates normal OpenCode delegation automatically for child
+sessions. The protocol and benchmark also work without the plugin.
 
 ## Numbers
 
@@ -141,15 +153,16 @@ provider usage from token comparisons.
 
 ## Status
 
-RelayIR is experimental `v0.1` software. The protocol, validator, benchmark runner,
-and OpenCode invocation path work today. The current evidence is intentionally
-small.
+RelayIR is experimental `v0.2` software. The protocol, validator, benchmark runner,
+OpenCode invocation path, and child-session plugin work today. The current evidence
+is intentionally small. Child-session injection was validated end to end with
+OpenCode 1.18.18.
 
 Roadmap:
 
 1. Broader fixtures, repetitions, and holdout evaluation.
 2. Black-box search over controlled H1 variants.
-3. Opt-in OpenCode integration for real orchestrator-to-subagent handoffs.
+3. Live OpenCode integration coverage across releases and session event variants.
 4. Additional model and language controls when token accounting is comparable.
 
 ## Repository map

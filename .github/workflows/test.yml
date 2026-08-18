@@ -17,3 +17,4 @@ jobs:
           node-version: 24
       - run: npm test
       - run: npm run benchmark:fake
+      - run: npm pack --dry-run

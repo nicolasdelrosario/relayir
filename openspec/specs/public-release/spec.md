@@ -1,7 +1,7 @@
 # public-release Specification
 
 ## Purpose
-TBD - created by archiving change prepare-public-release. Update Purpose after archive.
+Define the public package, documentation, evidence, and release boundary for RelayIR.
 
 ## Requirements
 

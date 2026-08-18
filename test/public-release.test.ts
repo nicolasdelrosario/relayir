@@ -3,12 +3,29 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 
-test('public package metadata is complete and npm publishing stays disabled', async () => {
+test('public package metadata is complete', async () => {
   const pkg = JSON.parse(await readFile('package.json', 'utf8'));
-  assert.equal(pkg.private, true);
+  assert.equal(pkg.version, '0.2.0');
+  assert.equal(pkg.private, undefined);
+  assert.deepEqual(pkg.exports, { '.': './src/protocol.ts', './server': './src/plugin.ts' });
+  assert.deepEqual(pkg.publishConfig, { access: 'public' });
+  assert.equal(pkg.engines.opencode, '>=1.18.18 <2');
+  assert.equal(pkg.dependencies, undefined);
+  assert.equal(pkg.devDependencies, undefined);
   assert.equal(pkg.license, 'MIT');
   assert.equal(pkg.repository.url, 'git+https://github.com/nicolasdelrosario/relayir.git');
   assert.match(pkg.description, /handoff protocol/i);
+});
+
+test('npm tarball contains the plugin entrypoint and contract', () => {
+  const result = spawnSync('npm', ['pack', '--dry-run', '--json'], { encoding: 'utf8' });
+  assert.equal(result.status, 0, result.stderr);
+  const files = JSON.parse(result.stdout)[0].files.map((file: { path: string }) => file.path);
+  assert.ok(files.includes('src/plugin.ts'));
+  assert.ok(files.includes('contracts/opencode-h1-v1.md'));
+  assert.ok(files.includes('assets/relayir.svg'));
+  assert.ok(files.includes('contracts/h1-v1.md'));
+  assert.ok(files.includes('benchmarks/results/2026-08-18-smoke.md'));
 });
 
 test('committed smoke evidence supports the public metric', async () => {

@@ -1,0 +1,28 @@
+{
+  "name": "relayir",
+  "version": "0.1.0",
+  "description": "A compact, auditable handoff protocol and benchmark for AI agents.",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "author": {
+    "name": "Nicolas Del Rosario",
+    "url": "https://github.com/nicolasdelrosario"
+  },
+  "homepage": "https://github.com/nicolasdelrosario/relayir#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nicolasdelrosario/relayir.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nicolasdelrosario/relayir/issues"
+  },
+  "keywords": ["ai-agents", "opencode", "multi-agent", "protocol", "benchmark", "token-efficiency"],
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "test": "node --test test/*.test.ts",
+    "benchmark:fake": "node scripts/fake-benchmark.ts",
+    "benchmark:smoke": "node scripts/benchmark.ts --split smoke",
+    "benchmark": "node scripts/benchmark.ts"
+  }
+}

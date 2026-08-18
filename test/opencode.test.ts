@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { buildOpenCodeArgs, invokeOpenCode, isAgentFallbackStderr, parseEvents } from '../src/opencode.ts';
+const fixtureText = (name: string) => readFile(`test/fixtures/${name}`, 'utf8');
+test('aggregates real OpenCode text.part.messageID events and usage', async () => { const x = parseEvents(await fixtureText('success.jsonl')); assert.equal(x.text, 'ok'); assert.deepEqual(x.usage, { input: 1, output: 2, reasoning: 0, cacheRead: 0, cacheWrite: 0 }); });
+test('covers event fixtures and missing usage', async () => { assert.equal(parseEvents(await fixtureText('multi-step.jsonl')).text, 'new'); assert.equal(parseEvents(await fixtureText('missing-usage.jsonl')).usage, undefined); const malformed = await fixtureText('malformed.jsonl'), multiple = await fixtureText('multiple-session.jsonl'); assert.throws(() => parseEvents(malformed)); assert.throws(() => parseEvents(multiple)); assert.equal(JSON.parse(await fixtureText('failed.json')).exitCode, 1); });
+test('uses the stable agent fallback stderr detector fixture', async () => { assert.equal(isAgentFallbackStderr(await fixtureText('agent-fallback.stderr')), true); assert.equal(isAgentFallbackStderr('normal stderr'), false); });
+test('rejects malformed and multiple sessions', () => { assert.throws(() => parseEvents('{bad}')); assert.throws(() => parseEvents('{"type":"step_finish","sessionID":"a","part":{"messageID":"m"}}\n{"type":"step_finish","sessionID":"b","part":{"messageID":"m"}}')); });
+test('rejects a final message without text', () => { assert.throws(() => parseEvents('{"type":"step_finish","sessionID":"s","part":{"messageID":"m"}}\n{"type":"text","sessionID":"s","part":{"messageID":"other","text":"not final"}}'), /no text/); });
+test('uses a fresh read-only agent invocation without hidden flags', () => { const args = buildOpenCodeArgs('prompt', 'provider/model'); assert.deepEqual(args.slice(0, 7), ['run', '--pure', '--format', 'json', '--model', 'provider/model', '--agent']); assert.equal(args[7], 'relayir-benchmark'); assert.equal(args.includes('--continue'), false); assert.equal(args.includes('--session'), false); assert.equal(args.includes('--auto'), false); });
+test('resolves spawn errors instead of hanging', async () => { const x = await invokeOpenCode({ prompt: 'x', model: 'm', timeoutMs: 100, command: '/not/a/real/opencode' }); assert.match(x.error ?? '', /ENOENT/); });

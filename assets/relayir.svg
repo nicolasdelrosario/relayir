@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 220" role="img" aria-labelledby="title desc">
+  <title id="title">RelayIR</title>
+  <desc id="desc">Three connected relay nodes carrying a compact signal into the RelayIR wordmark</desc>
+  <defs>
+    <linearGradient id="signal" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#6c63ff"/>
+      <stop offset="1" stop-color="#00b8a9"/>
+    </linearGradient>
+    <style>
+      .ink { fill: #151515; }
+      .wire { fill: none; stroke: url(#signal); stroke-linecap: round; stroke-width: 10; }
+      .node { fill: #fff; stroke: url(#signal); stroke-width: 8; }
+      @media (prefers-color-scheme: dark) { .ink { fill: #f5f5f5; } .node { fill: #111; } }
+    </style>
+  </defs>
+  <path class="wire" d="M55 110h90l42-52 62 104 48-52h75"/>
+  <circle class="node" cx="55" cy="110" r="18"/>
+  <circle class="node" cx="187" cy="58" r="18"/>
+  <circle class="node" cx="297" cy="110" r="18"/>
+  <path d="M346 96l28 14-28 14z" fill="#00b8a9"/>
+  <text class="ink" x="410" y="139" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="92" font-weight="700" letter-spacing="-5">RelayIR</text>
+</svg>

@@ -1,0 +1,15 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { loadConfig, validateH1, validatePlainFallback } from '../src/protocol.ts';
+const valid = 'H1 EXP\nG: goal\nC: read-only\nE:\n- src/a.ts:2 | fact\nR: result\nN: next';
+test('validates roles and evidence', () => { const x = validateH1(valid); assert.equal(x.ok, true); assert.equal(x.envelope?.evidence[0].reference, 'src/a.ts:2'); assert.equal(x.envelope?.raw, x.raw); });
+test('accepts harmless trailing whitespace in the header', () => { assert.equal(validateH1(valid.replace('H1 EXP', 'H1 EXP  ')).ok, true); });
+test('accepts harmless whitespace after the E header', () => { assert.equal(validateH1(valid.replace('E:', 'E:  ')).ok, true); });
+test('counts duplicate headers while allowing evidence lines', () => { assert.equal(validateH1(valid.replace('- src/a.ts:2 | fact', '- src/a.ts:2 | fact\n- src/b.ts:3 | another')).ok, true); assert.match(validateH1(valid.replace('E:\n', 'E:\nE:\n')).errors.join(','), /duplicate field: E/); });
+test('rejects missing, duplicate, unknown and malformed fields', () => { for (const input of ['H1 EXP\nG: x\nC: x\nR: x\nN: x', 'H1 EXP\nG: x\nG: y\nC: x\nE:\n- bad | x\nR: x\nN: x', 'H1 NO\nG: x\nC: x\nE:\n- a:1 | x\nR: x\nN: x']) assert.equal(validateH1(input).ok, false); });
+test('rejects empty required fields but permits empty K and Q', () => { for (const field of ['G', 'C', 'R', 'N']) assert.match(validateH1(valid.replace(`${field}: ${field === 'G' ? 'goal' : field === 'C' ? 'read-only' : field === 'R' ? 'result' : 'next'}`, `${field}:`)).errors.join(','), new RegExp(`empty field: ${field}`)); assert.equal(validateH1(valid.replace('C: read-only', 'C:\nK:\nQ:')).ok, false); assert.equal(validateH1(valid.replace('C: read-only', 'C: read-only\nK:\nQ:')).ok, true); });
+test('redacts secrets and validates fallback independently', () => { const x = validateH1(valid.replace('fact', 'token=abc')); assert.equal(x.raw.includes('[REDACTED]'), false); const c = loadConfig('{"secretPatterns":["token=[^ ]+"]}'); assert.match(validateH1(valid.replace('fact', 'token=abc'), c).raw, /REDACTED/); assert.equal(validatePlainFallback('Result: safe\nNext: inspect', c).ok, true); });
+test('fallback requires exactly one result and next', () => { assert.equal(validatePlainFallback('Result: x\nResult: y\nNext: z').ok, false); });
+test('fallback tolerates blank lines but rejects extra content', () => { assert.equal(validatePlainFallback('Result: x\n\nNext: z\n').ok, true); assert.equal(validatePlainFallback('Result: x\nNext: z\nextra').ok, false); });
+test('rejects non-evidence multiline fields', () => { assert.match(validateH1(valid.replace('G: goal', 'G: goal\ncontinued')).errors.join(','), /multiline field: G/); });
+test('checks original size before redaction', () => { const config = loadConfig('{"maxBytes":10,"secretPatterns":["secret"]}'); assert.match(validateH1(valid.replace('fact', 'secret'), config).errors.join(','), /size exceeds maxBytes/); });

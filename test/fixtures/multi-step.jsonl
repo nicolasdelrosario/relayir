@@ -1,0 +1,4 @@
+{"type":"text","sessionID":"s","part":{"messageID":"old","text":"old"}}
+{"type":"step_finish","sessionID":"s","part":{"messageID":"old","tokens":{"input":1,"output":1}}}
+{"type":"text","sessionID":"s","part":{"messageID":"new","text":"new"}}
+{"type":"step_finish","sessionID":"s","part":{"messageID":"new","tokens":{"input":2,"output":2}}}

@@ -1,0 +1,7 @@
+{
+  "maxBytes": 12000,
+  "maxEvidenceItems": 12,
+  "maxFallbackRetries": 1,
+  "timeoutMs": 120000,
+  "secretPatterns": []
+}

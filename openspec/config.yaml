@@ -1,0 +1,4 @@
+schema: spec-driven
+context: |
+  RelayIR is a zero-runtime-dependency TypeScript protocol and benchmark for AI agent handoffs.
+  Public documentation is English. Node 24 is the supported runtime.

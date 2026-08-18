@@ -1,0 +1,10 @@
+{
+  "id": "sync-timeout",
+  "version": "1.0",
+  "role": "EXP",
+  "split": "smoke",
+  "prompt": "Genera el reporte final transformando únicamente estos datos autoritativos; no investigues ni inspecciones archivos. Hechos: retry ocurre antes del bloqueo; fetch sin límite causa bloqueo. Restricciones: read-only; max=3 hallazgos. Evidencia: src/sync.ts:42. Próxima acción: revisar callers fetchBatch.",
+  "authoritative": { "facts": ["retry ocurre antes del bloqueo", "fetch sin límite causa bloqueo"], "constraints": ["read-only", "max=3 hallazgos"], "evidence": ["src/sync.ts:42"], "next": ["revisar callers fetchBatch"] },
+  "expected": { "facts": ["retry ocurre antes del bloqueo", "fetch sin límite causa bloqueo"], "constraints": ["read-only", "max=3 hallazgos"], "evidence": ["src/sync.ts:42"], "next": ["revisar callers fetchBatch"] },
+  "success": ["fetch sin límite causa bloqueo", "src/sync.ts:42"]
+}

@@ -1,0 +1,2 @@
+{"type":"text","sessionID":"s","part":{"messageID":"m","text":"ok"}}
+{"type":"step_finish","sessionID":"s","part":{"messageID":"m","tokens":{"input":1,"output":2,"reasoning":0,"cache":{"read":0,"write":0}}}}

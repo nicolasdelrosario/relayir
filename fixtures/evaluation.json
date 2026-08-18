@@ -1,0 +1,9 @@
+{
+  "id": "abort-signal",
+  "version": "1.0",
+  "role": "REV",
+  "split": "evaluation",
+  "prompt": "Genera el reporte final transformando únicamente este caso autocontenido; no investigues ni inspecciones archivos. Hecho: fetchBatch no recibe AbortSignal y puede bloquear. Restricciones: solo lectura; máximo 2 hallazgos. Evidencia: src/api.ts:88. Próximo paso: añadir timeout al caller.",
+  "expected": { "facts": ["fetchBatch no recibe AbortSignal"], "constraints": ["solo lectura", "máximo 2 hallazgos"], "evidence": ["src/api.ts:88"], "next": ["añadir timeout al caller"] },
+  "success": ["src/api.ts:88"]
+}

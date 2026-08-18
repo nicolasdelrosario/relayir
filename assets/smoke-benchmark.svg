@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 330" role="img" aria-labelledby="title desc">
+  <title id="title">First RelayIR smoke benchmark</title>
+  <desc id="desc">Horizontal bars compare score per token: free prose 0.000398, Cavecrew 0.000453, H1 0.000621</desc>
+  <defs>
+    <linearGradient id="h1" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#6c63ff"/><stop offset="1" stop-color="#00b8a9"/></linearGradient>
+    <style>
+      .ink { fill: #181818; }
+      .muted { fill: #686868; }
+      .track { fill: #ececec; }
+      @media (prefers-color-scheme: dark) { .ink { fill: #f4f4f4; } .muted { fill: #aaa; } .track { fill: #2b2b2b; } }
+    </style>
+  </defs>
+  <text class="ink" x="30" y="42" font-family="system-ui, sans-serif" font-size="24" font-weight="700">Score per total provider token</text>
+  <text class="muted" x="30" y="70" font-family="system-ui, sans-serif" font-size="15">First smoke fixture · DeepSeek V4 Flash · n=1</text>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="17">
+    <text class="ink" x="30" y="128">Free prose</text><rect class="track" x="180" y="106" width="620" height="28" rx="14"/><rect x="180" y="106" width="397" height="28" rx="14" fill="#929292"/><text class="ink" x="815" y="127">.398</text>
+    <text class="ink" x="30" y="198">Cavecrew</text><rect class="track" x="180" y="176" width="620" height="28" rx="14"/><rect x="180" y="176" width="452" height="28" rx="14" fill="#626262"/><text class="ink" x="815" y="197">.453</text>
+    <text class="ink" x="30" y="268" font-weight="700">H1</text><rect class="track" x="180" y="246" width="620" height="28" rx="14"/><rect x="180" y="246" width="620" height="28" rx="14" fill="url(#h1)"/><text class="ink" x="815" y="267" font-weight="700">.621</text>
+  </g>
+  <text class="muted" x="30" y="316" font-family="system-ui, sans-serif" font-size="14">Values shown ×1000. One observation; reproduce before generalizing.</text>
+</svg>

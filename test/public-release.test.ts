@@ -5,7 +5,7 @@ import { spawnSync } from 'node:child_process';
 
 test('public package metadata is complete', async () => {
   const pkg = JSON.parse(await readFile('package.json', 'utf8'));
-  assert.equal(pkg.version, '0.2.0');
+  assert.equal(pkg.version, '0.3.0');
   assert.equal(pkg.private, undefined);
   assert.deepEqual(pkg.exports, { '.': './src/protocol.ts', './server': './src/plugin.ts' });
   assert.deepEqual(pkg.publishConfig, { access: 'public' });
@@ -26,6 +26,30 @@ test('npm tarball contains the plugin entrypoint and contract', () => {
   assert.ok(files.includes('assets/relayir.svg'));
   assert.ok(files.includes('contracts/h1-v1.md'));
   assert.ok(files.includes('benchmarks/results/2026-08-18-smoke.md'));
+  assert.ok(files.includes('benchmarks/results/2026-08-19-v03.md'));
+  assert.ok(files.includes('benchmarks/results/2026-08-19-v03.jsonl'));
+  assert.ok(files.includes('scripts/compact-results.ts'));
+});
+
+test('committed v0.3 evidence is complete and compact', async () => {
+  const rows = (await readFile('benchmarks/results/2026-08-19-v03.jsonl', 'utf8'))
+    .trim().split('\n').map(JSON.parse);
+  assert.equal(rows.length, 384);
+  assert.deepEqual(Object.fromEntries(['openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra', 'opencode/deepseek-v4-flash-free']
+    .map((model) => [model, rows.filter((row) => row.model === model).length])), {
+    'openai/gpt-5.6-luna': 48,
+    'openai/gpt-5.6-sol': 144,
+    'openai/gpt-5.6-terra': 48,
+    'opencode/deepseek-v4-flash-free': 144,
+  });
+  for (const row of rows) {
+    assert.equal('text' in row, false);
+    assert.equal('invocations' in row, false);
+    assert.equal('startedAt' in row, false);
+    assert.equal('endedAt' in row, false);
+    for (const category of ['facts', 'constraints', 'evidence', 'next']) assert.equal(typeof row[category], 'number');
+    if (row.usage) assert.equal(row.totalTokens, Object.values(row.usage).reduce((sum, value) => sum + value, 0));
+  }
 });
 
 test('committed smoke evidence supports the public metric', async () => {
@@ -47,6 +71,9 @@ test('README presents RelayIR without MVP branding', async () => {
   assert.doesNotMatch(readme, /RelayIR MVP/);
   assert.match(readme, /Less chatter\. More signal\./);
   assert.match(readme, /n=1/);
+  assert.match(readme, /384-run/);
+  assert.match(readme, /simpler baselines used fewer total tokens/i);
+  assert.doesNotMatch(readme, /\+37% score per token over Cavecrew in the first smoke test/);
   assert.match(readme, /LICENSE/);
 });
 

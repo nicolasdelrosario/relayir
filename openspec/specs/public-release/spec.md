@@ -16,11 +16,19 @@ protocol and reproducible benchmark with the tagline `Less chatter. More signal.
 
 ### Requirement: Honest benchmark evidence
 Every performance claim SHALL identify the sample size, model, metric, limitation,
-and a committed redacted result that can be inspected without running a model.
+and a committed redacted result that can be inspected without running a model. The
+v0.3 evidence SHALL describe its 384 records, fixture/split/language/role balance,
+contract/profile versions, provider-reported token categories, and descriptive scope.
 
 #### Scenario: Headline metric
-- **WHEN** the README shows the score-per-token improvement over Cavecrew
-- **THEN** `n=1` and the reproducibility link appear next to the claim
+- **WHEN** historical smoke evidence is shown
+- **THEN** its `n=1` caveat and reproducibility link appear next to it, separate from
+  the current v0.3 evidence
+
+#### Scenario: Neutral v0.3 headline
+- **WHEN** the README summarizes the official benchmark
+- **THEN** it identifies the 384-run matrix, links the report and raw JSONL, and
+  does not present the historical n=1 smoke result as current evidence
 
 ### Requirement: Reusable open-source repository
 The repository SHALL include an MIT license, descriptive package metadata, and CI
@@ -39,3 +47,12 @@ not required by RelayIR.
 - **WHEN** the release tree is staged
 - **THEN** only source, tests, protocol docs, benchmark evidence, OpenSpec artifacts,
   CI, metadata, and the RelayIR benchmark agent are included
+
+### Requirement: v0.3 evidence package
+The published package SHALL include the v0.3 Markdown report, redacted JSONL evidence,
+and compact-results script while preserving zero runtime dependencies and package
+exports.
+
+#### Scenario: Inspectable evidence
+- **WHEN** a user runs `npm pack --dry-run`
+- **THEN** the v0.3 report, JSONL, and `scripts/compact-results.ts` are listed

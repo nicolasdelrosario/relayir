@@ -14,8 +14,8 @@
 </p>
 
 <p align="center">
-  <strong>+37% score per token over Cavecrew in the first smoke test</strong><br>
-  <sub>One self-contained fixture, the same model, fresh sessions, no tools. n=1: an existence check, not a general performance claim. <a href="benchmarks/results/2026-08-18-smoke.md">Method and raw result</a>.</sub>
+  <strong>384-run matrix: H1 preserved median fidelity; simpler baselines used fewer total tokens.</strong><br>
+  <sub>Descriptive v0.3 evidence, not a superiority claim. <a href="benchmarks/results/2026-08-19-v03.md">Report</a> · <a href="benchmarks/results/2026-08-19-v03.jsonl">raw JSONL</a>.</sub>
 </p>
 
 ---
@@ -107,7 +107,7 @@ sessions with a project-local primary agent whose tools are all denied.
 
 ## Use H1 in an agent today
 
-Copy [`contracts/h1-v1.md`](contracts/h1-v1.md) into a subagent's system prompt and
+Copy [`contracts/opencode-h1-v1.md`](contracts/opencode-h1-v1.md) into a subagent's system prompt and
 ask it to return the role that matches its job. The parser and validator are in
 [`src/protocol.ts`](src/protocol.ts).
 
@@ -116,20 +116,27 @@ sessions. The protocol and benchmark also work without the plugin.
 
 ## Numbers
 
-<p align="center">
-  <img src="assets/smoke-benchmark.svg" width="760" alt="RelayIR first smoke benchmark: H1 leads free prose and Cavecrew in score per token">
-</p>
+The official v0.3 matrix has exactly **384 records**: DeepSeek and Sol contribute
+144 each (n=3), Luna and Terra 48 each (n=1), across 12 fixtures and four
+contracts. Every model/split/contract group has median fidelity 1. On the Sol and
+DeepSeek holdouts, H1 does not beat free prose or Cavecrew on score/token and
+generally uses more total tokens.
 
-| Contract | Fidelity | Total provider tokens | Score/token | Output tokens |
-| --- | ---: | ---: | ---: | ---: |
-| Free prose | 0.625 | 1569 | 0.000398 | 255 |
-| Cavecrew | 0.750 | 1655 | 0.000453 | 339 |
-| **H1** | **1.000** | **1610** | **0.000621** | **218** |
+| Model | Split | Contract | Fidelity median | Total tokens median | Score/token median |
+| --- | --- | --- | ---: | ---: | ---: |
+| Sol | holdout | free prose | 1 | 1228.5 | 0.0008 |
+| Sol | holdout | Cavecrew | 1 | 1235 | 0.0008 |
+| Sol | holdout | H1 | 1 | 1447 | 0.0007 |
+| DeepSeek | holdout | free prose | 1 | 1586 | 0.0006 |
+| DeepSeek | holdout | Cavecrew | 1 | 1557 | 0.0006 |
+| DeepSeek | holdout | H1 | 1 | 1894 | 0.0005 |
 
 The fixture supplies authoritative facts and measures literal handoff preservation,
-not open-ended software correctness. Results vary by model and run. Read the
-[full methodology and limitations](benchmarks/results/2026-08-18-smoke.md) or inspect
-the [redacted JSONL](benchmarks/results/2026-08-18-smoke.jsonl).
+not open-ended software correctness. See the [full v0.3 report](benchmarks/results/2026-08-19-v03.md)
+and [redacted JSONL](benchmarks/results/2026-08-19-v03.jsonl).
+
+The earlier `+37%` score/token smoke result remains historical only: one fixture,
+one model, n=1, and not current evidence ([smoke report](benchmarks/results/2026-08-18-smoke.md)).
 
 ## How the benchmark works
 
@@ -139,6 +146,7 @@ self-contained fixture
         +-- free prose contract
         +-- Cavecrew contract
         +-- RelayIR H1 contract
+        +-- JSON contract
         |
 fresh OpenCode session per arm
         |
@@ -151,19 +159,22 @@ The benchmark never executes model output. It rejects tool-call markup, redacts
 operator-configured secret patterns before persistence, and excludes runs without
 provider usage from token comparisons.
 
+The v0.3 matrix uses 12 fixtures (8 evaluation, 4 holdout), four contracts, and
+four models. It is balanced 6 en/6 es and three fixtures per role; DeepSeek and Sol
+use n=3, while Luna and Terra are exploratory n=1.
+
 ## Status
 
-RelayIR is experimental `v0.2` software. The protocol, validator, benchmark runner,
+RelayIR is experimental `v0.3` software. The protocol, validator, benchmark runner,
 OpenCode invocation path, and child-session plugin work today. The current evidence
-is intentionally small. Child-session injection was validated end to end with
-OpenCode 1.18.18.
+is descriptive and intentionally limited. Child-session injection was validated end
+to end with OpenCode 1.18.18.
 
 Roadmap:
 
-1. Broader fixtures, repetitions, and holdout evaluation.
-2. Black-box search over controlled H1 variants.
-3. Live OpenCode integration coverage across releases and session event variants.
-4. Additional model and language controls when token accounting is comparable.
+1. Agentic parent→subagent tasks.
+2. Consider H2 or black-box variants only after more evidence.
+3. Broader hosts later.
 
 ## Repository map
 
@@ -181,9 +192,9 @@ Roadmap:
 
 **Why not JSON?**
 
-JSON is a useful baseline to add. H1 starts smaller and keeps evidence readable in
-the exact text agents already exchange. RelayIR should earn that choice through
-measurement, not assumption.
+JSON is included as a v0.3 baseline. It preserved the same median fidelity and often
+used fewer total tokens than H1, while H1 remains easier to scan as plain text.
+RelayIR reports that tradeoff instead of assuming one format always wins.
 
 **Why not binary, Base64, or an invented language?**
 
@@ -194,16 +205,19 @@ human auditability, and graceful recovery when one symbol is wrong.
 
 No. It makes the handoff explicit and measurable.
 
-**Is the 37% improvement universal?**
+**Did H1 win?**
 
-No. It is one reproducible smoke observation with a visible `n=1` caveat. Broader
-claims require broader evidence.
+No superiority claim. In v0.3 H1 preserved median fidelity, but free prose and
+Cavecrew used fewer total tokens on the DeepSeek and Sol holdouts. RelayIR makes
+handoffs explicit and measurable; it does not make models smarter.
 
 ## Development
 
 ```bash
 npm test
 npm run benchmark:fake
+npm run benchmark:compact -- results/*.jsonl --output /tmp/relayir-evidence.jsonl
+npm run benchmark:report -- /tmp/relayir-evidence.jsonl --output /tmp/relayir-report.md
 ```
 
 The versioned OpenSpec artifacts are development history; contributors using

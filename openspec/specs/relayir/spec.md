@@ -194,10 +194,13 @@ quality, significance, bootstrap confidence, or generalization from these fixtur
 - **THEN** no metric combines records across models
 
 ### Requirement: Public benchmark caveats
-Published benchmark documentation SHALL state that official results require DeepSeek and Sol n=3,
-Luna and Terra n=1, that calibration uses DeepSeek evaluation n=1 only, and that no real-model
-benchmark result exists until those runs are explicitly produced.
+Published benchmark documentation SHALL state that the official v0.3 matrix contains exactly 384
+records: DeepSeek and Sol n=3, Luna and Terra exploratory n=1, with eight evaluation and four
+holdout fixtures, 6 en/6 es, and three fixtures per role. It SHALL identify the deployed OpenCode
+H1 profile, report failures and provider-reported token categories, and make no p-value,
+generalization, or superiority claim from these descriptive results.
 
-#### Scenario: No premature result claim
-- **WHEN** the official real-model matrix has not run
-- **THEN** public documentation retains the existing n=1 smoke caveat
+#### Scenario: Neutral official result
+- **WHEN** the official v0.3 matrix is published
+- **THEN** public documentation links the report and raw JSONL and keeps the historical n=1 smoke
+  result separate from the current evidence

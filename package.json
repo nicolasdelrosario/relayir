@@ -1,6 +1,6 @@
 {
   "name": "relayir",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A compact, auditable handoff protocol and benchmark for AI agents.",
   "type": "module",
   "license": "MIT",
@@ -29,6 +29,7 @@
     "benchmark:fake": "node scripts/fake-benchmark.ts",
     "benchmark:smoke": "node scripts/benchmark.ts --split smoke",
     "benchmark": "node scripts/benchmark.ts",
+    "benchmark:compact": "node scripts/compact-results.ts",
     "benchmark:report": "node scripts/report.ts"
   }
 }

@@ -8,3 +8,4 @@
 - [x] Update scripts/package inclusion without changing version or public claims.
 - [x] Add tests for matrix rotation, contracts, scoring, privacy, artifacts, usage, spike, gate boundaries, and pre-freeze decoy/reference calibration.
 - [x] Validate the pre-registration and run the no-provider verification commands.
+- [x] Record the post-freeze Luna timeout and add row-level durability/resume; exclude the aborted execution without changing scoring, prompts, metrics, or gate.

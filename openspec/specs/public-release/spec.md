@@ -38,6 +38,10 @@ that runs without paid services or runtime dependencies.
 - **WHEN** a contributor clones the repository with Node 24
 - **THEN** `npm test` and `npm run benchmark:fake` run without dependency installation
 
+#### Scenario: Installed package exports
+- **WHEN** a Node 24 user installs the published package
+- **THEN** `relayir` and `relayir/server` resolve to executable JavaScript without a TypeScript loader
+
 ### Requirement: Clean published tree
 The committed tree SHALL exclude runtime results, temporary files, node_modules,
 credentials, machine-specific paths, and generated OpenSpec host scaffolding that is

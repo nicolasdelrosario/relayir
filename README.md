@@ -187,7 +187,7 @@ use n=3, while Luna and Terra are exploratory n=1.
 
 ## Status
 
-RelayIR is experimental `v0.3.1` software. The protocol, validator, benchmark runner,
+RelayIR is experimental `v0.3.2` software. The protocol, validator, benchmark runner,
 OpenCode invocation path, and child-session plugin work today. The current evidence
 is descriptive and intentionally limited. Child-session injection was validated end
 to end with OpenCode 1.18.18.

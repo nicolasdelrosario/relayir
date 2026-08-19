@@ -5,9 +5,9 @@ import { spawnSync } from 'node:child_process';
 
 test('public package metadata is complete', async () => {
   const pkg = JSON.parse(await readFile('package.json', 'utf8'));
-  assert.equal(pkg.version, '0.3.1');
+  assert.equal(pkg.version, '0.3.2');
   assert.equal(pkg.private, undefined);
-  assert.deepEqual(pkg.exports, { '.': './src/protocol.ts', './server': './src/plugin.ts' });
+  assert.deepEqual(pkg.exports, { '.': './dist/protocol.js', './server': './dist/plugin.js' });
   assert.deepEqual(pkg.publishConfig, { access: 'public' });
   assert.equal(pkg.engines.opencode, '>=1.18.18 <2');
   assert.equal(pkg.dependencies, undefined);
@@ -17,11 +17,19 @@ test('public package metadata is complete', async () => {
   assert.match(pkg.description, /handoff protocol/i);
 });
 
+test('published JavaScript exports load in Node', async () => {
+  const protocol = await import('../dist/protocol.js');
+  const plugin = await import('../dist/plugin.js');
+  assert.equal(protocol.validateH1('H1 EXP\nG: g\nC: c\nE:\n- a.ts:1 | e\nR: r\nN: n').ok, true);
+  assert.equal(plugin.default.id, 'relayir');
+});
+
 test('npm tarball contains the plugin entrypoint and contract', () => {
   const result = spawnSync('npm', ['pack', '--dry-run', '--json'], { encoding: 'utf8' });
   assert.equal(result.status, 0, result.stderr);
   const files = JSON.parse(result.stdout)[0].files.map((file: { path: string }) => file.path);
-  assert.ok(files.includes('src/plugin.ts'));
+  assert.ok(files.includes('dist/plugin.js'));
+  assert.ok(files.includes('dist/protocol.js'));
   assert.ok(files.includes('contracts/opencode-h1-v1.md'));
   assert.ok(files.includes('assets/relayir.svg'));
   assert.ok(files.includes('contracts/h1-v1.md'));

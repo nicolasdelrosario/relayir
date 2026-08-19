@@ -1,6 +1,6 @@
 {
   "name": "relayir",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "A compact, auditable handoff protocol and benchmark for AI agents.",
   "type": "module",
   "license": "MIT",
@@ -19,12 +19,14 @@
   "keywords": ["ai-agents", "opencode", "multi-agent", "protocol", "benchmark", "token-efficiency"],
   "engines": { "node": ">=24", "opencode": ">=1.18.18 <2" },
   "exports": {
-    ".": "./src/protocol.ts",
-    "./server": "./src/plugin.ts"
+    ".": "./dist/protocol.js",
+    "./server": "./dist/plugin.js"
   },
-  "files": ["src/plugin.ts", "src/protocol.ts", "src/benchmark.ts", "src/report.ts", "src/agentic-benchmark.ts", "src/agentic-report.ts", ".opencode/agents", ".opencode/plugins/relayir-agentic-contract.ts", "assets", "contracts", "fixtures", "scripts", "docs", "benchmarks/results", "README.md", "LICENSE"],
+  "files": ["dist", "src/plugin.ts", "src/protocol.ts", "src/benchmark.ts", "src/report.ts", "src/agentic-benchmark.ts", "src/agentic-report.ts", ".opencode/agents", ".opencode/plugins/relayir-agentic-contract.ts", "assets", "contracts", "fixtures", "scripts", "docs", "benchmarks/results", "README.md", "LICENSE"],
   "publishConfig": { "access": "public" },
   "scripts": {
+    "build": "node scripts/build.ts",
+    "prepack": "npm run build",
     "test": "node --test test/*.test.ts",
     "benchmark:fake": "node scripts/fake-benchmark.ts",
     "benchmark:smoke": "node scripts/benchmark.ts --split smoke",

@@ -7,7 +7,7 @@ export type Fixture = { id: string; version: string; role: 'EXP' | 'REV' | 'IMP'
 export type Contract = { id: string; version: string; instruction: string };
 export const fixtureFiles = ['smoke.json', 'evaluation.json', 'holdout.json'] as const;
 export async function loadFixtures(split?: Fixture['split'], directory = 'fixtures'): Promise<Fixture[]> { const files = split ? [`${split}.json`] : [...fixtureFiles]; const loaded = await Promise.all(files.map(async (file) => JSON.parse(await readFile(`${directory}/${file}`, 'utf8')) as Fixture | Fixture[])); return loaded.flatMap((x) => Array.isArray(x) ? x : [x]).filter((fixture) => !split || fixture.split === split); }
-const contractFiles = [['free-prose', 'free-prose-v1.md', '1.0'], ['cavecrew', 'cavecrew-v1.md', '1.0'], ['h1', 'h1-v1.md', '1.0'], ['json', 'json-v1.md', '1.0']] as const;
+const contractFiles = [['free-prose', 'free-prose-v1.md', '1.0'], ['cavecrew', 'cavecrew-v1.md', '1.0'], ['h1', 'opencode-h1-v1.md', '2.0'], ['json', 'json-v1.md', '1.0']] as const;
 export async function loadContracts(directory = 'contracts'): Promise<Contract[]> { return Promise.all(contractFiles.map(async ([id, file, version]) => ({ id, version, instruction: await readFile(`${directory}/${file}`, 'utf8') })) ); }
 const normalize = (s: string) => s.toLowerCase().replace(/\s+/g, ' ').trim();
 export function hasToolCallMarkers(text: string): boolean { return /(?:DSML.*tool_calls|\btool_calls\b|<tool_call\b|<function(?:=|\s)|<\|[^\n]*tool[^\n]*\|>)/i.test(text); }

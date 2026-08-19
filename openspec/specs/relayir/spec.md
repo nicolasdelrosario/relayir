@@ -164,7 +164,8 @@ fixture's versioned metadata.
 - **THEN** eight evaluation and four holdout fixtures are returned without mixing splits
 
 ### Requirement: Versioned contracts and trials
-The benchmark SHALL run free-prose v1, Cavecrew v1, H1 v1, and JSON v1 contracts. It SHALL support positive
+The benchmark SHALL run free-prose v1, Cavecrew v1, the deployed OpenCode H1 profile v2,
+and JSON v1 contracts. It SHALL support positive
 repetitions (default one), record a zero-based trial, and rotate contract order deterministically per
 trial without changing fixture content.
 

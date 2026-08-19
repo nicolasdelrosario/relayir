@@ -1,15 +1,15 @@
 import { readFile } from 'node:fs/promises';
 
 const files: Record<string, string> = {
-  'free-prose': 'contracts/free-prose-v1.md',
-  cavecrew: 'contracts/cavecrew-v1.md',
-  json: 'contracts/json-v1.md',
+  none: '',
+  checklist: 'contracts/checklist-v1.md',
+  json: 'contracts/json-v2.md',
   h1: 'contracts/opencode-h1-v1.md',
 };
 
 export const server = async () => {
   const selected = process.env.RELAYIR_AGENTIC_CONTRACT;
-  if (!selected || !files[selected]) return { event: async () => {}, 'experimental.chat.system.transform': async () => {} };
+  if (!selected || !(selected in files) || selected === 'none') return { event: async () => {}, 'experimental.chat.system.transform': async () => {} };
   let contract: string;
   try { contract = await readFile(new URL(`../../${files[selected]}`, import.meta.url), 'utf8'); } catch { return { event: async () => {}, 'experimental.chat.system.transform': async () => {} }; }
   const children = new Set<string>();

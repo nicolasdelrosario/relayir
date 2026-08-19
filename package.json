@@ -1,6 +1,6 @@
 {
   "name": "relayir",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "A compact, auditable handoff protocol and benchmark for AI agents.",
   "type": "module",
   "license": "MIT",

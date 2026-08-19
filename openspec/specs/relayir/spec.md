@@ -273,3 +273,13 @@ The report MUST require at least 95% valid instrumentation and at least 20% hidd
 #### Scenario: gate decision
 - **WHEN** the auditor prerequisite fails
 - **THEN** the decision is `MAINTENANCE_ONLY`
+
+### Requirement: v0.4 maintenance decision
+The completed 192-row matrix SHALL be published with its `MAINTENANCE_ONLY`
+decision. RelayIR SHALL add no auditor, runtime checklist, H2, or other planned
+feature from this evidence; maintenance and evidence-preserving fixes MAY continue.
+
+#### Scenario: Public v0.4 status
+- **WHEN** the v0.4 evidence is released
+- **THEN** users can distinguish the working experimental package from a roadmap
+  that is closed pending external demand and new pre-registered evidence

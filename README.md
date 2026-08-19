@@ -14,8 +14,8 @@
 </p>
 
 <p align="center">
-  <strong>96-attempt agentic matrix: H1 did not clear the continuation gate; protocol development is frozen.</strong><br>
-  <sub>Descriptive v0.3.1 evidence, not a superiority claim. <a href="benchmarks/results/2026-08-19-v031-agentic.md">Report</a> · <a href="benchmarks/results/2026-08-19-v031-agentic.jsonl">raw JSONL</a>.</sub>
+  <strong>192-attempt audit matrix: the pre-registered gate returned MAINTENANCE_ONLY.</strong><br>
+  <sub>Descriptive v0.4 evidence, not a product or superiority claim. <a href="benchmarks/results/2026-08-19-v04-audit.md">Report</a> · <a href="benchmarks/results/2026-08-19-v04-audit.jsonl">raw JSONL</a>.</sub>
 </p>
 
 ---
@@ -118,7 +118,28 @@ ask it to return the role that matches its job. The parser and validator are in
 The npm plugin integrates normal OpenCode delegation automatically for child
 sessions. The protocol and benchmark also work without the plugin.
 
-## Agentic result
+## Audit result
+
+The v0.4 matrix contains exactly **192 parent→subagent attempts**: eight
+synthetic tasks, four child contracts, two parent models, and three trials.
+The execution harness was frozen at commit
+[`5f19adf`](https://github.com/nicolasdelrosario/relayir/commit/5f19adf).
+
+The pre-registered gate emitted **MAINTENANCE_ONLY**. Luna passed instrumentation,
+showed a 50% hidden-defect rate for `none`, and checklist improved transfer by 25
+percentage points. Terra showed a 33% hidden-defect rate, but exact instrumentation
+was 91/96 (94.8%, below the locked 95% threshold) and checklist transfer fell by
+4 points. Checklist median token overhead was -13% for Luna and -14% for Terra.
+
+This is useful evidence of handoff loss, but not sufficient evidence to build an
+auditor or runtime checklist. RelayIR therefore remains available and enters
+maintenance rather than expanding its feature set. The synthetic fixture scope,
+excluded operational attempts, and instrumentation corrections are documented in
+the [archived design](openspec/changes/archive/2026-08-19-build-audit-benchmark-v04/design.md).
+See the [v0.4 report](benchmarks/results/2026-08-19-v04-audit.md) and
+[redacted JSONL](benchmarks/results/2026-08-19-v04-audit.jsonl).
+
+## Earlier v0.3.1 result
 
 The v0.3.1 matrix contains exactly **96 parent→subagent attempts**: four tasks,
 four contracts, two parent models, and three trials. Every parent returned the
@@ -165,38 +186,38 @@ one model, n=1, and not current evidence ([smoke report](benchmarks/results/2026
 ```text
 self-contained fixture
         |
-        +-- free prose contract
-        +-- Cavecrew contract
+        +-- no child contract
+        +-- semantic checklist
         +-- RelayIR H1 contract
         +-- JSON contract
         |
-fresh OpenCode session per arm
+task-only parent delegates once
         |
-facts + constraints + evidence + next-action recall
+outcome + evidence + constraint + artifact checks
         |
-JSONL with usage, latency, fidelity, and score/token
+redacted JSONL with usage, latency, and deterministic gate
 ```
 
 The benchmark never executes model output. It rejects tool-call markup, redacts
 operator-configured secret patterns before persistence, and excludes runs without
 provider usage from token comparisons.
 
-The v0.3 matrix uses 12 fixtures (8 evaluation, 4 holdout), four contracts, and
-four models. It is balanced 6 en/6 es and three fixtures per role; DeepSeek and Sol
-use n=3, while Luna and Terra are exploratory n=1.
+The v0.4 matrix uses eight synthetic fixtures, two per role, four contracts, two
+parents, and three trials. It is descriptive and does not establish significance,
+generalization, model quality, or product demand.
 
 ## Status
 
-RelayIR is experimental `v0.3.2` software. The protocol, validator, benchmark runner,
+RelayIR is experimental `v0.4.0` software. The protocol, validator, benchmark runner,
 OpenCode invocation path, and child-session plugin work today. The current evidence
 is descriptive and intentionally limited. Child-session injection was validated end
 to end with OpenCode 1.18.18.
 
-Roadmap:
+Maintenance policy:
 
 1. Keep H1 available as an experimental, auditable reference implementation.
-2. Pivot evaluation work to format-neutral agentic benchmarks.
-3. Reopen protocol design only if new evidence justifies it.
+2. Accept compatibility, security, and correctness fixes; add no planned features.
+3. Reopen product work only after external demand and new pre-registered evidence.
 
 ## Repository map
 

@@ -5,7 +5,7 @@ import { spawnSync } from 'node:child_process';
 
 test('public package metadata is complete', async () => {
   const pkg = JSON.parse(await readFile('package.json', 'utf8'));
-  assert.equal(pkg.version, '0.3.2');
+  assert.equal(pkg.version, '0.4.0');
   assert.equal(pkg.private, undefined);
   assert.deepEqual(pkg.exports, { '.': './dist/protocol.js', './server': './dist/plugin.js' });
   assert.deepEqual(pkg.publishConfig, { access: 'public' });
@@ -38,7 +38,25 @@ test('npm tarball contains the plugin entrypoint and contract', () => {
   assert.ok(files.includes('benchmarks/results/2026-08-19-v03.jsonl'));
   assert.ok(files.includes('benchmarks/results/2026-08-19-v031-agentic.md'));
   assert.ok(files.includes('benchmarks/results/2026-08-19-v031-agentic.jsonl'));
+  assert.ok(files.includes('benchmarks/results/2026-08-19-v04-audit.md'));
+  assert.ok(files.includes('benchmarks/results/2026-08-19-v04-audit.jsonl'));
   assert.ok(files.includes('scripts/compact-results.ts'));
+});
+
+test('committed v0.4 evidence contains the complete maintenance decision', async () => {
+  const rows = (await readFile('benchmarks/results/2026-08-19-v04-audit.jsonl', 'utf8'))
+    .trim().split('\n').map(JSON.parse);
+  const report = await readFile('benchmarks/results/2026-08-19-v04-audit.md', 'utf8');
+  assert.equal(rows.length, 192);
+  assert.equal(new Set(rows.map((row) => `${row.parentModel}/${row.task}/${row.trial}/${row.contract}`)).size, 192);
+  assert.deepEqual(Object.fromEntries(['openai/gpt-5.6-luna', 'openai/gpt-5.6-terra']
+    .map((parent) => [parent, rows.filter((row) => row.parentModel === parent).length])), {
+    'openai/gpt-5.6-luna': 96,
+    'openai/gpt-5.6-terra': 96,
+  });
+  for (const row of rows) for (const field of ['prompt', 'text', 'transcript', 'nonce', 'startedAt', 'endedAt']) assert.equal(field in row, false);
+  assert.match(report, /Decision: \*\*MAINTENANCE_ONLY\*\*/);
+  assert.match(report, /Matrix complete: \*\*true\*\*/);
 });
 
 test('committed v0.3.1 evidence contains the frozen 96-attempt decision', async () => {
@@ -95,8 +113,10 @@ test('README presents RelayIR without MVP branding', async () => {
   assert.match(readme, /Less chatter\. More signal\./);
   assert.match(readme, /n=1/);
   assert.match(readme, /384 records/);
-  assert.match(readme, /96-attempt agentic matrix/i);
+  assert.match(readme, /96 parent→subagent attempts/i);
   assert.match(readme, /FREEZE_AND_PIVOT/);
+  assert.match(readme, /192-attempt audit matrix/i);
+  assert.match(readme, /MAINTENANCE_ONLY/);
   assert.match(readme, /used more tokens than simpler\s+baselines/i);
   assert.doesNotMatch(readme, /\+37% score per token over Cavecrew in the first smoke test/);
   assert.match(readme, /LICENSE/);

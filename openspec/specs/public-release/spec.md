@@ -73,3 +73,14 @@ redacted attempts and the deterministic FREEZE_AND_PIVOT report.
 #### Scenario: Published agentic evidence
 - **WHEN** a user inspects the v0.3.1 package
 - **THEN** the 96-row JSONL, report, frozen H1 status, and format-neutral benchmark pivot are explicit
+
+### Requirement: v0.4 maintenance release
+The published package SHALL include the complete 192-row redacted v0.4 audit matrix,
+its deterministic `MAINTENANCE_ONLY` report, the frozen execution commit, synthetic
+scope caveats, and the excluded operational-run disclosure while preserving zero
+runtime dependencies and runnable JavaScript exports.
+
+#### Scenario: Inspectable maintenance decision
+- **WHEN** a user inspects the v0.4 package or README
+- **THEN** it links the report and raw JSONL and does not claim an auditor, checklist
+  product, significance, generalization, or protocol superiority

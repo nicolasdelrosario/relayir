@@ -1,0 +1,18 @@
+import { readFile } from 'node:fs/promises';
+
+export type BenchmarkRecord = { model: string; split: string; contract: string; fixture: string; trial: number; fidelity: number; totalTokens: number | null; outputTokens: number | null; scorePerToken: number | null; latencyMs: number; success: boolean; fallbackCount: number; tokenMetricUnavailable: boolean };
+const median = (values: number[]) => { if (!values.length) return null; const x = [...values].sort((a, b) => a - b), m = (x.length - 1) / 2; return (x[Math.floor(m)] + x[Math.ceil(m)]) / 2; };
+const iqr = (values: number[]) => { if (!values.length) return null; const x = [...values].sort((a, b) => a - b), q = (p: number) => { const i = (x.length - 1) * p, lo = Math.floor(i), hi = Math.ceil(i); return x[lo] + (x[hi] - x[lo]) * (i - lo); }; return q(.75) - q(.25); };
+const fmt = (x: number | null) => x === null ? '—' : Number(x.toFixed(4)).toString();
+const key = (r: BenchmarkRecord) => `${r.model}\0${r.split}\0${r.contract}`;
+export async function readRecords(files: string[]): Promise<BenchmarkRecord[]> { const rows: BenchmarkRecord[] = []; for (const file of files) for (const line of (await readFile(file, 'utf8')).split('\n').filter(Boolean)) rows.push(JSON.parse(line)); return rows; }
+export function renderReport(rows: BenchmarkRecord[]): string {
+  const groups = [...new Map(rows.map((r) => [key(r), rows.filter((x) => key(x) === key(r))])).entries()].sort(([a], [b]) => a.localeCompare(b));
+  const out = ['# RelayIR benchmark report', '', '| Model | Split | Contract | n | Success | Fallback | Missing usage | Fidelity median | Fidelity IQR | Total tokens median | Output tokens median | Score/token median | Latency median |', '|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|'];
+  for (const [encoded, group] of groups) { const [model, split, contract] = encoded.split('\0'), nums = (field: keyof BenchmarkRecord) => group.map((r) => r[field]).filter((x): x is number => typeof x === 'number'); out.push(`| ${model} | ${split} | ${contract} | ${group.length} | ${fmt(group.filter((r) => r.success).length / group.length)} | ${fmt(group.filter((r) => r.fallbackCount > 0).length / group.length)} | ${group.filter((r) => r.tokenMetricUnavailable).length} | ${fmt(median(nums('fidelity')))} | ${fmt(iqr(nums('fidelity')))} | ${fmt(median(nums('totalTokens')))} | ${fmt(median(nums('outputTokens')))} | ${fmt(median(nums('scorePerToken')))} | ${fmt(median(nums('latencyMs')))} |`); }
+  out.push('', '## Paired median H1 deltas', '', '| Model | Split | Baseline | Fidelity n | H1 fidelity − baseline fidelity | Score/token n | H1 score/token − baseline score/token |', '|---|---|---|---:|---:|---:|---:|');
+  const baselines = rows.filter((r) => r.contract !== 'h1'), h1 = new Map(rows.filter((r) => r.contract === 'h1').map((r) => [`${r.model}\0${r.split}\0${r.fixture}\0${r.trial}`, r]));
+  const deltas = new Map<string, { fidelity: number[]; score: number[] }>(); for (const b of baselines) { const h = h1.get(`${b.model}\0${b.split}\0${b.fixture}\0${b.trial}`); if (h) { const k = `${b.model}\0${b.split}\0${b.contract}`, xs = deltas.get(k) ?? { fidelity: [], score: [] }; xs.fidelity.push(h.fidelity - b.fidelity); if (typeof h.scorePerToken === 'number' && typeof b.scorePerToken === 'number') xs.score.push(h.scorePerToken - b.scorePerToken); deltas.set(k, xs); } }
+  for (const [encoded, xs] of [...deltas.entries()].sort(([a], [b]) => a.localeCompare(b))) { const [model, split, contract] = encoded.split('\0'); out.push(`| ${model} | ${split} | ${contract} | ${xs.fidelity.length} | ${fmt(median(xs.fidelity))} | ${xs.score.length} | ${fmt(median(xs.score))} |`); }
+  return `${out.join('\n')}\n`;
+}

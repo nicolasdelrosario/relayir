@@ -152,3 +152,51 @@ normalized exact inclusion.
 - **WHEN** category expectations are evaluated
 - **THEN** fidelity is the arithmetic mean of category recall and task success is
   recorded separately
+
+### Requirement: v0.3 benchmark matrix
+The benchmark SHALL load object-or-array JSON fixtures, retain the smoke fixture as a quick check,
+and keep evaluation and holdout splits separate. The official matrix SHALL contain eight evaluation
+fixtures and four holdout fixtures, balanced across four roles and languages as documented by each
+fixture's versioned metadata.
+
+#### Scenario: Official fixture loading
+- **WHEN** evaluation and holdout files are loaded
+- **THEN** eight evaluation and four holdout fixtures are returned without mixing splits
+
+### Requirement: Versioned contracts and trials
+The benchmark SHALL run free-prose v1, Cavecrew v1, H1 v1, and JSON v1 contracts. It SHALL support positive
+repetitions (default one), record a zero-based trial, and rotate contract order deterministically per
+trial without changing fixture content.
+
+#### Scenario: Repeated contract run
+- **WHEN** a benchmark runs with repeats greater than one
+- **THEN** every fixture has one record per contract and trial with deterministic rotation
+
+### Requirement: JSON baseline
+The JSON v1 baseline SHALL require exactly one object with keys `goal`, `constraints`, `evidence`,
+`result`, and `next`; it SHALL validate non-empty strings, arrays, and evidence references locally
+before scoring. Invalid structured output MAY receive the same maximum-one degraded plain fallback
+as H1, but holdout content SHALL never be used for calibration or fake outputs.
+
+#### Scenario: Invalid JSON response
+- **WHEN** a JSON response has invalid syntax, missing keys, or an extra key
+- **THEN** it is rejected locally and receives at most one degraded fallback
+
+### Requirement: Model-separated reporting
+Benchmark records SHALL identify model, split, language, contract, fixture, and trial. Reports SHALL
+group by model, split, and contract, use deterministic median and IQR summaries, and calculate paired
+H1 fidelity deltas only for matching model, split, fixture, and trial. Reports SHALL not claim model
+quality, significance, bootstrap confidence, or generalization from these fixtures.
+
+#### Scenario: Separate model groups
+- **WHEN** records contain more than one model
+- **THEN** no metric combines records across models
+
+### Requirement: Public benchmark caveats
+Published benchmark documentation SHALL state that official results require DeepSeek and Sol n=3,
+Luna and Terra n=1, that calibration uses DeepSeek evaluation n=1 only, and that no real-model
+benchmark result exists until those runs are explicitly produced.
+
+#### Scenario: No premature result claim
+- **WHEN** the official real-model matrix has not run
+- **THEN** public documentation retains the existing n=1 smoke caveat

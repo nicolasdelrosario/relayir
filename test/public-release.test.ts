@@ -5,7 +5,7 @@ import { spawnSync } from 'node:child_process';
 
 test('public package metadata is complete', async () => {
   const pkg = JSON.parse(await readFile('package.json', 'utf8'));
-  assert.equal(pkg.version, '0.3.0');
+  assert.equal(pkg.version, '0.3.1');
   assert.equal(pkg.private, undefined);
   assert.deepEqual(pkg.exports, { '.': './src/protocol.ts', './server': './src/plugin.ts' });
   assert.deepEqual(pkg.publishConfig, { access: 'public' });
@@ -28,7 +28,22 @@ test('npm tarball contains the plugin entrypoint and contract', () => {
   assert.ok(files.includes('benchmarks/results/2026-08-18-smoke.md'));
   assert.ok(files.includes('benchmarks/results/2026-08-19-v03.md'));
   assert.ok(files.includes('benchmarks/results/2026-08-19-v03.jsonl'));
+  assert.ok(files.includes('benchmarks/results/2026-08-19-v031-agentic.md'));
+  assert.ok(files.includes('benchmarks/results/2026-08-19-v031-agentic.jsonl'));
   assert.ok(files.includes('scripts/compact-results.ts'));
+});
+
+test('committed v0.3.1 evidence contains the frozen 96-attempt decision', async () => {
+  const rows = (await readFile('benchmarks/results/2026-08-19-v031-agentic.jsonl', 'utf8'))
+    .trim().split('\n').map(JSON.parse);
+  const report = await readFile('benchmarks/results/2026-08-19-v031-agentic.md', 'utf8');
+  assert.equal(rows.length, 96);
+  assert.equal(rows.filter((row) => row.contract === 'h1' && row.handoffValid).length, 15);
+  assert.equal(rows.filter((row) => row.contract === 'json' && row.handoffValid).length, 11);
+  assert.ok(rows.every((row) => row.parentSuccess && row.hierarchyValid));
+  for (const row of rows) for (const field of ['nonce', 'prompt', 'text', 'transcript', 'startedAt', 'endedAt']) assert.equal(field in row, false);
+  assert.match(report, /Decision: \*\*FREEZE_AND_PIVOT\*\*/);
+  assert.match(report, /Net wins: 0/);
 });
 
 test('committed v0.3 evidence is complete and compact', async () => {
@@ -71,8 +86,10 @@ test('README presents RelayIR without MVP branding', async () => {
   assert.doesNotMatch(readme, /RelayIR MVP/);
   assert.match(readme, /Less chatter\. More signal\./);
   assert.match(readme, /n=1/);
-  assert.match(readme, /384-run/);
-  assert.match(readme, /simpler baselines used fewer total tokens/i);
+  assert.match(readme, /384 records/);
+  assert.match(readme, /96-attempt agentic matrix/i);
+  assert.match(readme, /FREEZE_AND_PIVOT/);
+  assert.match(readme, /used more tokens than simpler\s+baselines/i);
   assert.doesNotMatch(readme, /\+37% score per token over Cavecrew in the first smoke test/);
   assert.match(readme, /LICENSE/);
 });

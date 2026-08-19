@@ -59,9 +59,13 @@ exports.
 
 ### Requirement: v0.3.1 harness boundary
 The repository SHALL include the agentic benchmark harness, four versioned task fixtures, deterministic
-report/gate code, and OpenSpec evidence for v0.3.1 while retaining package version 0.3.0 until real
-results exist. No real model attempts or benchmark results SHALL be included in this change.
+report/gate code, and OpenSpec evidence for v0.3.1. The published package SHALL include all 96
+redacted attempts and the deterministic FREEZE_AND_PIVOT report.
 
 #### Scenario: Pre-run verification
 - **WHEN** a contributor performs the official verification
-- **THEN** fake tests and parsers pass without provider calls and the package remains zero runtime dependencies.
+- **THEN** fake tests and parsers pass without provider calls and the package remains zero runtime dependencies
+
+#### Scenario: Published agentic evidence
+- **WHEN** a user inspects the v0.3.1 package
+- **THEN** the 96-row JSONL, report, frozen H1 status, and format-neutral benchmark pivot are explicit

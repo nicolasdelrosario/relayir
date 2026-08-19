@@ -214,3 +214,12 @@ timestamps, and transcripts.
 #### Scenario: Frozen gate
 - **WHEN** the completed matrix is reported
 - **THEN** the deterministic report emits CONTINUE only for the specified win or ceiling/token gate; otherwise it emits FREEZE_AND_PIVOT.
+
+### Requirement: v0.3.1 decision
+The completed 96-attempt matrix SHALL be published with its FREEZE_AND_PIVOT decision. H1 and H2
+protocol development SHALL remain frozen unless new evidence justifies reopening the decision;
+benchmark work MAY continue without assuming a wire format is superior.
+
+#### Scenario: Public status
+- **WHEN** users inspect the README or H1 reference
+- **THEN** they can distinguish the still-usable experimental plugin from the frozen protocol roadmap

@@ -14,8 +14,8 @@
 </p>
 
 <p align="center">
-  <strong>384-run matrix: H1 preserved median fidelity; simpler baselines used fewer total tokens.</strong><br>
-  <sub>Descriptive v0.3 evidence, not a superiority claim. <a href="benchmarks/results/2026-08-19-v03.md">Report</a> · <a href="benchmarks/results/2026-08-19-v03.jsonl">raw JSONL</a>.</sub>
+  <strong>96-attempt agentic matrix: H1 did not clear the continuation gate; protocol development is frozen.</strong><br>
+  <sub>Descriptive v0.3.1 evidence, not a superiority claim. <a href="benchmarks/results/2026-08-19-v031-agentic.md">Report</a> · <a href="benchmarks/results/2026-08-19-v031-agentic.jsonl">raw JSONL</a>.</sub>
 </p>
 
 ---
@@ -89,6 +89,10 @@ handoff contract to child/subagent sessions only; root sessions are unchanged.
 Remove `"relayir"` to disable it. `opencode --pure` disables plugins. RelayIR
 does not change models, tools, permissions, or send telemetry.
 
+To try it, start OpenCode in a project and ask an agent with the `task` tool to
+delegate a focused job to a subagent. The child is instructed to return the
+human-readable H1 envelope shown above.
+
 To run the local checks instead:
 
 ```bash
@@ -99,7 +103,7 @@ npm run benchmark:fake
 To benchmark a real model:
 
 ```bash
-RELAYIR_MODEL=opencode/deepseek-v4-flash-free npm run benchmark:smoke
+RELAYIR_MODEL=openai/gpt-5.6-sol npm run benchmark:smoke
 ```
 
 This command uses network access and provider tokens. It starts fresh OpenCode
@@ -114,7 +118,25 @@ ask it to return the role that matches its job. The parser and validator are in
 The npm plugin integrates normal OpenCode delegation automatically for child
 sessions. The protocol and benchmark also work without the plugin.
 
-## Numbers
+## Agentic result
+
+The v0.3.1 matrix contains exactly **96 parent→subagent attempts**: four tasks,
+four contracts, two parent models, and three trials. Every parent returned the
+nonce answer and every run proved the expected one-parent/one-child hierarchy.
+The harness was frozen at commit [`7702139`](https://github.com/nicolasdelrosario/relayir/commit/7702139)
+before either official matrix was run.
+Strict child handoff validation passed 15/24 H1 attempts and 11/24 JSON attempts;
+free prose and Cavecrew did not preserve the required evidence reference in any
+of their 24 attempts.
+
+H1 had zero unique parent-success wins and zero losses. Among the incomplete set
+of valid structured comparisons, its median token reduction was -1%. The locked
+gate therefore emitted **FREEZE_AND_PIVOT**: H1 and prospective H2 development are
+frozen, and future work moves to format-neutral, auditable agentic benchmarks.
+See the [report](benchmarks/results/2026-08-19-v031-agentic.md) and
+[redacted JSONL](benchmarks/results/2026-08-19-v031-agentic.jsonl).
+
+## Earlier v0.3 numbers
 
 The official v0.3 matrix has exactly **384 records**: DeepSeek and Sol contribute
 144 each (n=3), Luna and Terra 48 each (n=1), across 12 fixtures and four
@@ -165,16 +187,16 @@ use n=3, while Luna and Terra are exploratory n=1.
 
 ## Status
 
-RelayIR is experimental `v0.3` software. The protocol, validator, benchmark runner,
+RelayIR is experimental `v0.3.1` software. The protocol, validator, benchmark runner,
 OpenCode invocation path, and child-session plugin work today. The current evidence
 is descriptive and intentionally limited. Child-session injection was validated end
 to end with OpenCode 1.18.18.
 
 Roadmap:
 
-1. Agentic parent→subagent tasks.
-2. Consider H2 or black-box variants only after more evidence.
-3. Broader hosts later.
+1. Keep H1 available as an experimental, auditable reference implementation.
+2. Pivot evaluation work to format-neutral agentic benchmarks.
+3. Reopen protocol design only if new evidence justifies it.
 
 ## Repository map
 
@@ -207,9 +229,10 @@ No. It makes the handoff explicit and measurable.
 
 **Did H1 win?**
 
-No superiority claim. In v0.3 H1 preserved median fidelity, but free prose and
-Cavecrew used fewer total tokens on the DeepSeek and Sol holdouts. RelayIR makes
-handoffs explicit and measurable; it does not make models smarter.
+No. In v0.3 H1 preserved median fidelity but used more tokens than simpler
+baselines. In v0.3.1 it produced no unique parent-success wins and failed the
+pre-registered continuation gate. H1 remains usable and inspectable, but its
+development is frozen rather than promoted as a superior format.
 
 ## Development
 

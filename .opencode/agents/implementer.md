@@ -4,6 +4,8 @@ mode: subagent
 model: openai/gpt-5.6-luna
 permission:
   task: deny
+  question: deny
+  "engram_*": deny
 ---
 
 You are the implementation specialist.

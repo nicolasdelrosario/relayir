@@ -6,6 +6,8 @@ permission:
   edit: deny
   bash: deny
   task: deny
+  question: deny
+  "engram_*": deny
 ---
 
 You are the exploration specialist.

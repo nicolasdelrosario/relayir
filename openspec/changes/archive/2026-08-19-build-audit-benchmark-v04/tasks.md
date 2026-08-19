@@ -9,3 +9,5 @@
 - [x] Add tests for matrix rotation, contracts, scoring, privacy, artifacts, usage, spike, gate boundaries, and pre-freeze decoy/reference calibration.
 - [x] Validate the pre-registration and run the no-provider verification commands.
 - [x] Record the post-freeze Luna timeout and add row-level durability/resume; exclude the aborted execution without changing scoring, prompts, metrics, or gate.
+- [x] Deny inherited memory and question tools after host-side Engram persistence left Implementer children pending; exclude the contaminated execution without changing benchmark semantics.
+- [x] Exclude the contaminated 96-row Luna run and IMP diagnostic attempts; use completed Task results for child scoring and sanitized child exports for metadata/usage without changing benchmark semantics.

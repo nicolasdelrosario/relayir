@@ -204,3 +204,13 @@ generalization, or superiority claim from these descriptive results.
 - **WHEN** the official v0.3 matrix is published
 - **THEN** public documentation links the report and raw JSONL and keeps the historical n=1 smoke
   result separate from the current evidence
+
+### Requirement: v0.3.1 agentic harness
+The benchmark SHALL run a 96-attempt real OpenCode parent-to-child matrix with one task delegation,
+child-only contract injection, deterministic per-run nonce verification, root and child exports, and
+no retries or judge calls. Persisted records SHALL omit nonces, raw prompts, outputs, absolute paths,
+timestamps, and transcripts.
+
+#### Scenario: Frozen gate
+- **WHEN** the completed matrix is reported
+- **THEN** the deterministic report emits CONTINUE only for the specified win or ceiling/token gate; otherwise it emits FREEZE_AND_PIVOT.

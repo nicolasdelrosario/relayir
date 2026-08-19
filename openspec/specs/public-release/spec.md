@@ -56,3 +56,12 @@ exports.
 #### Scenario: Inspectable evidence
 - **WHEN** a user runs `npm pack --dry-run`
 - **THEN** the v0.3 report, JSONL, and `scripts/compact-results.ts` are listed
+
+### Requirement: v0.3.1 harness boundary
+The repository SHALL include the agentic benchmark harness, four versioned task fixtures, deterministic
+report/gate code, and OpenSpec evidence for v0.3.1 while retaining package version 0.3.0 until real
+results exist. No real model attempts or benchmark results SHALL be included in this change.
+
+#### Scenario: Pre-run verification
+- **WHEN** a contributor performs the official verification
+- **THEN** fake tests and parsers pass without provider calls and the package remains zero runtime dependencies.

@@ -22,7 +22,7 @@
     ".": "./src/protocol.ts",
     "./server": "./src/plugin.ts"
   },
-  "files": ["src/plugin.ts", "src/protocol.ts", "src/benchmark.ts", "src/report.ts", "assets", "contracts", "fixtures", "scripts", "docs", "benchmarks/results", "README.md", "LICENSE"],
+  "files": ["src/plugin.ts", "src/protocol.ts", "src/benchmark.ts", "src/report.ts", "src/agentic-benchmark.ts", "src/agentic-report.ts", ".opencode/agents", ".opencode/plugins/relayir-agentic-contract.ts", "assets", "contracts", "fixtures", "scripts", "docs", "benchmarks/results", "README.md", "LICENSE"],
   "publishConfig": { "access": "public" },
   "scripts": {
     "test": "node --test test/*.test.ts",
@@ -30,6 +30,8 @@
     "benchmark:smoke": "node scripts/benchmark.ts --split smoke",
     "benchmark": "node scripts/benchmark.ts",
     "benchmark:compact": "node scripts/compact-results.ts",
-    "benchmark:report": "node scripts/report.ts"
+    "benchmark:report": "node scripts/report.ts",
+    "agentic:benchmark": "node scripts/agentic-benchmark.ts",
+    "agentic:report": "node scripts/agentic-report.ts"
   }
 }
